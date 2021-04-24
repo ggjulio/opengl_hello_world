@@ -49,7 +49,7 @@ _IWHITE   =\e[107m
 
 UNAME := $(shell uname)
 
-NAME = draw_polygon
+NAME = draw_triangle_strip
 
 LIB = glfw GL X11 pthread Xrandr Xi dl
 SRC_DIR = ./srcs

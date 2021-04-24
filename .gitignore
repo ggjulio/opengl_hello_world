@@ -3,6 +3,7 @@ draw_point
 draw_segment
 draw_line_strip_and_loop
 draw_polygon
+draw_triangle_strip
 poc
 
 #CMake
