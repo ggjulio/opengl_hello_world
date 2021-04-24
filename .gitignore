@@ -5,6 +5,7 @@ draw_line_strip_and_loop
 draw_polygon
 draw_triangle_strip
 draw_triangle_fan
+draw_circle_with_triangle_fan
 poc
 
 #CMake
