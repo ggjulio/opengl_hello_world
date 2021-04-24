@@ -34,16 +34,14 @@ int main(void)
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
 
-	GLfloat polygonVertices[] = 
+	GLfloat triangleVertices[] = 
 	{
 		20, 100, 0,
 		100, 300, 0,
 		500, 50, 0,
-		320, 10, 0,
-		40, 40, 0
+		500, 450, 0,
+		600, 320, 0,
 	};
-
-	// glPolygonMode(GL_FRONT_AND_BACK, GL_FILL ); // modes: GL_FILL, GL_LINE, GL_POINT
 
 	/* Loop until the user closes the window */
 	while (!glfwWindowShouldClose(window))
@@ -53,8 +51,8 @@ int main(void)
 		/* Render here */
 
 		glEnableClientState(GL_VERTEX_ARRAY);
-		glVertexPointer(3, GL_FLOAT, 0, polygonVertices);
-		glDrawArrays(GL_POLYGON, 0, 5);
+		glVertexPointer(3, GL_FLOAT, 0, triangleVertices);
+		glDrawArrays(GL_TRIANGLE_STRIP, 0, 5);
 		glDisableClientState(GL_VERTEX_ARRAY);
 
 		/* Swap front and back buffers */
