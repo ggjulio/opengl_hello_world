@@ -1,0 +1,14 @@
+cmake_minimum_required( VERSION 3.0.0 )
+project( first_window )
+
+set(GLFW_BUILD_DOCS OFF CACHE BOOL "" FORCE)
+set(GLFW_BUILD_TESTS OFF CACHE BOOL "" FORCE)
+set(GLFW_BUILD_EXAMPLES OFF CACHE BOOL "" FORCE)
+
+target_link_libraries( first_window glfw )
+find_package(OpenGL REQUIRED)
+
+
+set(first_window_SRCS main.cpp)
+
+add_executable(first_window ${first_window_SRCS})

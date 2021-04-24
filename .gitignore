@@ -1,5 +1,6 @@
 first_window
 draw_point
+draw_segment
 poc
 
 #CMake
