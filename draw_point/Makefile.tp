@@ -49,7 +49,7 @@ _IWHITE   =\e[107m
 
 UNAME := $(shell uname)
 
-NAME = first_window
+NAME = draw_point
 
 LIB = glfw GL X11 pthread Xrandr Xi dl
 SRC_DIR = ./srcs
