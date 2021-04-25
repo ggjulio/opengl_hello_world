@@ -1,4 +1,5 @@
 first_window/first_window
+poc
 draw_point/draw_point
 draw_segment/draw_segment
 draw_line_strip_and_loop/draw_line_strip_and_loop
@@ -7,7 +8,9 @@ draw_triangle_strip/draw_triangle_strip
 draw_triangle_fan/draw_triangle_fan
 draw_circle_with_triangle_fan/draw_circle_with_triangle_fan
 draw_hollow_circle/draw_hollow_circle
-poc
+draw_quad_strip/draw_quad_strip
+
+
 
 #CMake
 CMakeLists.txt.user
