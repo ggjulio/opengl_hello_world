@@ -10,6 +10,7 @@ draw_circle_with_triangle_fan/draw_circle_with_triangle_fan
 draw_hollow_circle/draw_hollow_circle
 draw_quad_strip/draw_quad_strip
 draw_cube/draw_cube
+triangle_color/triangle_color
 
 
 
