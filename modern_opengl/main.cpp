@@ -110,8 +110,8 @@ int main(void)
 		"}\n"
 	;
 
-	GLuint shader = createShader(vertexShader, fragmentShader);
-	glUseProgram(shader);
+	GLuint program = createShader(vertexShader, fragmentShader);
+	glUseProgram(program);
 
 	/* Loop until the user closes the window */
 	while (!glfwWindowShouldClose(window))
@@ -127,7 +127,7 @@ int main(void)
 		/* Poll for and process events */
 		glfwPollEvents();
 	}
-
+	glDeleteProgram(program);
 	glfwTerminate();
 	return 0;
 }
