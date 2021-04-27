@@ -8,6 +8,20 @@
 #define SCREEN_WIDTH	640
 #define SCREEN_HEIGHT	480
 
+void GLClearError()
+{
+	while(glGetError() != GL_NO_ERROR);
+}
+
+void GLCheckError()
+{
+	GLenum error;
+	while((error = glGetError()) != GL_NO_ERROR)
+	{
+		std::cout << "GL Error code : " << error << std::endl;
+	}
+}
+
 unsigned int compileShader(GLuint type, const std::string &source)
 {
 	GLuint id = glCreateShader(type);
@@ -71,22 +85,31 @@ int main(void)
 
 	std::cout << "gl version: " << glGetString(GL_VERSION) << std::endl;
 
-	GLfloat triangleVertices[9] = 
+	GLfloat triangleVertices[] =
 	{
-		 0,		0.5, 0,
-		-0.25, -0.5, 0,
-		 0.25, -0.5, 0
+		-0.5,  0.5, 0,
+		 0.5,  0.5, 0,
+		-0.5, -0.5, 0,
+		0.5,  -0.5, 0,
+	};
+
+	GLuint indices[]{
+		0,1,2,
+		2,3,1
 	};
 
 	unsigned int buffer;
 	glGenBuffers(1, &buffer);
 	glBindBuffer(GL_ARRAY_BUFFER, buffer);
-	glBufferData(GL_ARRAY_BUFFER, 9 * sizeof(GLfloat), triangleVertices, GL_STATIC_DRAW);
+	glBufferData(GL_ARRAY_BUFFER, 2 * 9 * sizeof(GLfloat), triangleVertices, GL_STATIC_DRAW);
 
 	glEnableVertexAttribArray(0);
 	glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, sizeof(GLfloat) * 3, (const void *)0);
 
-	glBindBuffer(GL_ARRAY_BUFFER, 0);
+	unsigned int ibo;
+	glGenBuffers(1, &ibo);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, 6 * sizeof(GLuint), indices, GL_STATIC_DRAW);
 
 	std::string vertexShader = 
 		"#version 330 core\n"
@@ -104,22 +127,37 @@ int main(void)
 		"\n"
 		"layout(location = 0) out vec4 color;\n"
 		"\n"
+		"uniform vec4 u_color;\n"
+		"\n"
 		"void main()\n"
 		"{\n"
-		"  color = vec4(1.0, 0.3, 0.0, 1.0);\n"
+		"  color = u_color;\n"
 		"}\n"
 	;
 
 	GLuint program = createShader(vertexShader, fragmentShader);
 	glUseProgram(program);
 
+	int location = glGetUniformLocation(program, "u_color");
+	if (location == -1)
+		std::cout << __FILE__ <<" "<< __LINE__ << ": uniform location not found"<< std::endl;
+
+	float red = 1.0f;
+	float inc = 0.05f;
 	/* Loop until the user closes the window */
 	while (!glfwWindowShouldClose(window))
 	{
 		glClear(GL_COLOR_BUFFER_BIT);
 
 		/* Render here */
-		glDrawArrays(GL_TRIANGLES, 0, 3);
+		glUniform4f(location, red, 0.3f, 0.0f, 1.0f);
+		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, nullptr);
+
+		if (red >= 1.0f)
+			inc = -0.05;
+		else if (red <= .0f)
+			inc = 0.05f;
+		red += inc;
 
 		/* Swap front and back buffers */
 		glfwSwapBuffers(window);
