@@ -8,6 +8,30 @@
 #define SCREEN_WIDTH	640
 #define SCREEN_HEIGHT	480
 
+std::string vertexShader = 
+	"#version 330 core\n"
+	"\n"
+	"layout(location = 0) in vec4 position;\n"
+	"\n"
+	"void main()\n"
+	"{\n"
+	"  gl_Position = position;\n"
+	"}\n"
+;
+
+std::string fragmentShader = 
+	"#version 330 core\n"
+	"\n"
+	"layout(location = 0) out vec4 color;\n"
+	"\n"
+	"uniform vec4 u_color;\n"
+	"\n"
+	"void main()\n"
+	"{\n"
+	"  color = u_color;\n"
+	"}\n"
+;
+
 void GLClearError()
 {
 	while(glGetError() != GL_NO_ERROR);
@@ -69,6 +93,10 @@ int main(void)
 	if (!glfwInit())
 		return -1;
 
+	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
+	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
+	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+
 	/* Create a windowed mode window and its OpenGL context */
 	window = glfwCreateWindow(SCREEN_WIDTH, SCREEN_HEIGHT, "Hello World", NULL, NULL);
 	if (!window)
@@ -98,42 +126,25 @@ int main(void)
 		2,3,1
 	};
 
+	unsigned int vao;
+	glGenVertexArrays(1, &vao);
+	glBindVertexArray(vao);
+
 	unsigned int buffer;
 	glGenBuffers(1, &buffer);
 	glBindBuffer(GL_ARRAY_BUFFER, buffer);
-	glBufferData(GL_ARRAY_BUFFER, 2 * 9 * sizeof(GLfloat), triangleVertices, GL_STATIC_DRAW);
+	glBufferData(GL_ARRAY_BUFFER, 2 * 6 * sizeof(GLfloat), triangleVertices, GL_STATIC_DRAW);
 
 	glEnableVertexAttribArray(0);
+	GLClearError();
 	glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, sizeof(GLfloat) * 3, (const void *)0);
+	GLCheckError();
 
 	unsigned int ibo;
 	glGenBuffers(1, &ibo);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo);
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, 6 * sizeof(GLuint), indices, GL_STATIC_DRAW);
 
-	std::string vertexShader = 
-		"#version 330 core\n"
-		"\n"
-		"layout(location = 0) in vec4 position;\n"
-		"\n"
-		"void main()\n"
-		"{\n"
-		"  gl_Position = position;\n"
-		"}\n"
-	;
-
-	std::string fragmentShader = 
-		"#version 330 core\n"
-		"\n"
-		"layout(location = 0) out vec4 color;\n"
-		"\n"
-		"uniform vec4 u_color;\n"
-		"\n"
-		"void main()\n"
-		"{\n"
-		"  color = u_color;\n"
-		"}\n"
-	;
 
 	GLuint program = createShader(vertexShader, fragmentShader);
 	glUseProgram(program);
@@ -141,6 +152,12 @@ int main(void)
 	int location = glGetUniformLocation(program, "u_color");
 	if (location == -1)
 		std::cout << __FILE__ <<" "<< __LINE__ << ": uniform location not found"<< std::endl;
+
+	// unbind everything just to test...
+	glUseProgram(0);
+	glBindVertexArray(0);
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 
 	float red = 1.0f;
 	float inc = 0.05f;
@@ -150,6 +167,10 @@ int main(void)
 		glClear(GL_COLOR_BUFFER_BIT);
 
 		/* Render here */
+		glUseProgram(program);
+		glBindVertexArray(vao);
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo);
+	
 		glUniform4f(location, red, 0.3f, 0.0f, 1.0f);
 		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, nullptr);
 
